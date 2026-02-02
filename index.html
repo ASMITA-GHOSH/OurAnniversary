@@ -1,264 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>For You ❤️</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="UTF-8">
+<title>Happy Anniversary Baby ❤️</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
-
+* { box-sizing: border-box; font-family: 'Segoe UI', cursive; }
 body {
-  background: radial-gradient(circle at top, #ffd6e0, #ff8fab);
-  overflow: hidden;
-  color: #4a001f;
-  transition: background 0.8s, color 0.8s;
+    margin: 0;
+    background: linear-gradient(#ffe6f0, #fff);
+    overflow-x: hidden;
 }
 
-.layer {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 30px;
-  z-index: 1;
-}
+.layer { display: none; min-height: 100vh; padding: 40px; text-align: center; }
+.layer.active { display: block; }
 
-.hidden {
-  opacity: 0;
-  pointer-events: none;
+button {
+    padding: 12px 24px;
+    background: #ff4d88;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin: 10px;
 }
+button:hover { background: #e6005c; }
 
-/* 🌌 STARS */
-#stars {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.6;
-  animation: drift linear infinite;
-}
-
-@keyframes drift {
-  from { transform: translateY(-10vh); opacity: 0; }
-  10% { opacity: 0.6; }
-  to { transform: translateY(120vh); opacity: 0; }
-}
-
-/* 💓 HEART */
+/* Floating hearts */
 .heart {
-  width: 120px;
-  height: 120px;
-  background: #ff4d6d;
-  position: relative;
-  transform: rotate(-45deg);
-  animation: heartbeat 1.4s infinite;
+    position: fixed;
+    font-size: 18px;
+    animation: float 6s linear infinite;
+}
+@keyframes float {
+    0% { transform: translateY(100vh); opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
 }
 
-.heart::before,
-.heart::after {
-  content: "";
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  background: #ff4d6d;
-  border-radius: 50%;
+/* ---------------- LAYER 1 ---------------- */
+/* Envelope */
+.envelope-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    cursor: pointer;
 }
 
-.heart::before { top: -60px; }
-.heart::after { left: 60px; }
-
-@keyframes heartbeat {
-  0% { transform: scale(1) rotate(-45deg); }
-  14% { transform: scale(1.15) rotate(-45deg); }
-  28% { transform: scale(1) rotate(-45deg); }
-  42% { transform: scale(1.15) rotate(-45deg); }
-  70% { transform: scale(1) rotate(-45deg); }
+.envelope {
+    position: relative;
+    width: 220px;
+    height: 140px;
 }
 
-/* 🖼️ PHOTOS */
-.photo-container {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 90%;
-  max-width: 420px;
-  align-items: center;
+.envelope .body {
+    width: 100%;
+    height: 100%;
+    background: #ff4d88;
+    border-radius: 0 0 12px 12px;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
 }
 
-.photo-card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1.2s ease, transform 1.2s ease;
-  text-align: center;
+.envelope .flap {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-left: 110px solid transparent;
+    border-right: 110px solid transparent;
+    border-bottom: 70px solid #ff80aa;
+    transform-origin: top;
+    transition: transform 1s ease;
+    z-index: 2;
 }
 
-.photo-card.show {
-  opacity: 1;
-  transform: translateY(0);
+.envelope.open .flap { transform: rotateX(180deg); }
+
+.sweet-note {
+    max-width: 500px;
+    margin: 20px auto;
+    font-size: 18px;
+    line-height: 1.6;
 }
 
-.photo-card img {
-  width: 100%;
-  border-radius: 18px;
-  box-shadow: 0 0 20px rgba(255,77,109,.5);
+/* ---------------- LAYER 2 ---------------- */
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+}
+.item {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+.item img {
+    width: 360px;
+    border-radius: 20px;
+}
+.item p {
+    max-width: 420px;
+    font-size: 20px;
 }
 
-.photo-msg {
-  margin-top: 10px;
-  font-size: 15px;
-  color: #5a0026;
+/* ---------------- LAYER 3 ---------------- */
+.heart-envelope {
+    width: 200px;
+    height: 180px;
+    background: red;
+    position: relative;
+    margin: 100px auto;
+    transform: rotate(-45deg);
 }
-
-/* 🔘 BUTTON */
-.scroll-btn {
-  padding: 14px 28px;
-  border-radius: 30px;
-  border: none;
-  background: linear-gradient(135deg, #ff4d6d, #ff758f);
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+.heart-envelope:before,
+.heart-envelope:after {
+    content: "";
+    width: 200px;
+    height: 180px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
 }
-
-/* 🌙 NIGHT MODE */
-body.night {
-  background: radial-gradient(circle at top, #1b0f1a, #09040c);
-  color: #ffd6e0;
-}
-
-body.night .photo-msg {
-  color: #ffd6e0;
-}
-
-body.night .scroll-btn {
-  background: linear-gradient(135deg, #ff4d6d, #c9184a);
-}
-
-body.night .star {
-  opacity: 0.9;
-  box-shadow: 0 0 6px rgba(255,255,255,.8);
-}
-
-#nightToggle {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 999;
-  padding: 10px 18px;
-  border-radius: 20px;
-  border: none;
-  background: #ff8fab;
-  font-weight: bold;
-  cursor: pointer;
+.heart-envelope:before { top: -100px; left: 0; }
+.heart-envelope:after { left: 100px; top: 0; }
+.heart-text {
+    position: absolute;
+    transform: rotate(45deg);
+    top: 60px;
+    left: 20px;
+    width: 160px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
 }
 </style>
 </head>
-
 <body>
 
-<div id="stars"></div>
-<button id="nightToggle">🌙 Night Mode</button>
+<audio id="song" src="song.mp3.mpeg"></audio>
 
-<!-- LAYER 1 -->
-<div class="layer" id="layer1">
-  <div class="heart"></div>
-  <h1>I just wanted to tell you…</h1>
-  <h2>You mean everything to me ❤️</h2>
-  <button class="scroll-btn" onclick="nextLayer(2)">Next ↓</button>
+<!-- ---------------- LAYER 1 ---------------- -->
+<div class="layer active" id="layer1">
+    <h1>Happy Anniversary Baby ❤️</h1>
+    <p class="sweet-note">
+        One year ago, on 19th March 2025, we chose each other.  
+        This is my heart, wrapped just for you.
+    </p>
+
+    <div class="envelope-container" onclick="openEnvelope()">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="body"></div>
+        </div>
+    </div>
+
+    <button id="layer1Next" onclick="goToLayer(2)" style="display:none;">
+        Next ➡
+    </button>
 </div>
 
-<!-- LAYER 2 -->
-<div class="layer hidden" id="layer2">
-  <h1>Every memory with you ✨</h1>
+<!-- ---------------- LAYER 2 ---------------- -->
+<div class="layer" id="layer2">
+    <h2>Our Memories 📸</h2>
+    <div class="gallery">
+        <div class="item">
+            <img src="pic1.jpeg
+            <p>You were never just a moment, you became my forever.</p>
+        </div>
+        <div class="item">
+            <img src="pic2.jpg">
+            <p>With you, even silence feels safe.</p>
+        </div>
+        <div class="item">
+            <img src="pic3.jpeg">
+            <p>My favorite place will always be beside you.</p>
+        </div>
+        <div class="item">
+            <img src="pic4.jpg">
+            <p>You turned ordinary days into memories.</p>
+        </div>
+        <div class="item">
+            <img src="pic5.jpeg">
+            <p>Loving you feels effortless.</p>
+        </div>
+        <div class="item">
+            <img src="pic6.jpeg">
+            <p>You are my heart’s calm.</p>
+        </div>
+        <div class="item">
+            <img src="pic7.jpeg">
+            <p>One year down, forever to go.</p>
+        </div>
+    </div>
 
-  <div class="photo-container" id="photos"></div>
-
-  <button class="scroll-btn hidden" id="photoNext" onclick="nextLayer(3)">Next ↓</button>
+    <button onclick="goToLayer(1)">⬅ Back</button>
+    <button onclick="goToLayer(3)">Next ➡</button>
 </div>
 
-<!-- LAYER 3 -->
-<div class="layer hidden" id="layer3">
-  <h1>I LOVE YOU ❤️</h1>
+<!-- ---------------- LAYER 3 ---------------- -->
+<div class="layer" id="layer3">
+    <div class="heart-envelope">
+        <div class="heart-text">I Love You</div>
+    </div>
+    <button onclick="stopSong()">Stop Song 🎵</button>
+    <button onclick="goToLayer(2)">⬅ Back</button>
 </div>
-
-<audio id="song" src="music.mp3.mpeg" loop></audio>
 
 <script>
-/* 🌌 STARS */
-const starBox = document.getElementById("stars");
-setInterval(() => {
-  if (starBox.children.length > 120) return;
-  const s = document.createElement("div");
-  s.className = "star";
-  s.style.left = Math.random() * innerWidth + "px";
-  s.style.animationDuration = 8 + Math.random() * 12 + "s";
-  starBox.appendChild(s);
-  s.addEventListener("animationend", () => s.remove());
-}, 300);
+let opened = false;
 
-/* 📸 PHOTO DATA */
-const photos = [
-  { src: "pic1.jpeg", msg: "This moment still makes me smile 💖" },
-  { src: "pic2.jpg", msg: "Every second with you feels special ✨" },
-  { src: "pic3.jpeg", msg: "You make my world brighter 🌸" },
-  { src: "pic4.jpg", msg: "Memories I’ll cherish forever 💕" },
-  { src: "pic5.jpeg", msg: "You are my favorite person 🫶" },
-  { src: "pic6.jpeg", msg: "Every laugh with you is precious 💫" },
-  { src: "pic7.jpeg", msg: "I’d choose you again and again ❤️" }
-];
+function openEnvelope() {
+    if (opened) return;
+    opened = true;
 
-function showPhotos() {
-  const container = document.getElementById("photos");
-  photos.forEach((p, i) => {
+    document.querySelector('.envelope').classList.add('open');
+    document.getElementById('song').play();
+    confetti();
+
     setTimeout(() => {
-      const card = document.createElement("div");
-      card.className = "photo-card";
-      card.innerHTML = `
-        <img src="${p.src}">
-        <div class="photo-msg">${p.msg}</div>
-      `;
-      container.appendChild(card);
-      requestAnimationFrame(() => card.classList.add("show"));
-
-      if (i === photos.length - 1) {
-        document.getElementById("photoNext").classList.remove("hidden");
-      }
-    }, i * 2500); // ⏳ delay between photos
-  });
+        document.getElementById('layer1Next').style.display = 'inline-block';
+    }, 1200);
 }
 
-/* 🔀 LAYERS */
-function nextLayer(n) {
-  document.querySelectorAll(".layer").forEach(l => l.classList.add("hidden"));
-  document.getElementById("layer" + n).classList.remove("hidden");
-  document.getElementById("song").play().catch(()=>{});
-  if (n === 2) showPhotos();
+function goToLayer(n) {
+    document.querySelectorAll(".layer").forEach(l => l.classList.remove("active"));
+    document.getElementById("layer" + n).classList.add("active");
 }
 
-/* 🌙 NIGHT MODE */
-const btn = document.getElementById("nightToggle");
-btn.onclick = () => {
-  document.body.classList.toggle("night");
-  btn.textContent = document.body.classList.contains("night")
-    ? "☀️ Day Mode"
-    : "🌙 Night Mode";
-};
+function stopSong() {
+    document.getElementById('song').pause();
+}
+
+function confetti() {
+    for (let i = 0; i < 25; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+    }
+}
 </script>
 
 </body>
