@@ -1,395 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<title>For You ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Two-Layer Anniversary</title>
+
 <style>
-  body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: #ffe6f0;
-    overflow-x: hidden;
-    position: relative;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
 
-  h1, h2 {
-    text-align: center;
-    color: #d6336c;
-    margin: 5px 0;
-  }
+body {
+  background: radial-gradient(circle at top, #ffd6e0, #ff8fab);
+  overflow: hidden;
+  color: #4a001f;
+  transition: background 0.8s, color 0.8s;
+}
 
-  /* Layers */
-  .layer {
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    transition: opacity 1s ease;
-    z-index: 1;
-  }
+.layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  z-index: 1;
+}
 
-  .hidden {
-    opacity: 0;
-    pointer-events: none;
-    z-index: -1;
-  }
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
-  /* Special Message */
-  #special-message {
-    text-align: center;
-    font-size: 20px;
-    color: #a82045;
-    margin-bottom: 20px;
-    z-index: 2;
-    position: relative;
-  }
+/* 🌌 STARS */
+#stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
-  #special-message p {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: drift linear infinite;
+}
 
-  #special-message p.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes drift {
+  from { transform: translateY(-10vh); opacity: 0; }
+  10% { opacity: 0.6; }
+  to { transform: translateY(120vh); opacity: 0; }
+}
 
-  /* Envelope */
-  #envelope-container {
-    position: relative;
-    width: 250px;
-    margin: 30px auto;
-  }
+/* 💓 HEART */
+.heart {
+  width: 120px;
+  height: 120px;
+  background: #ff4d6d;
+  position: relative;
+  transform: rotate(-45deg);
+  animation: heartbeat 1.4s infinite;
+}
 
-  #envelope-glow {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 180px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,192,203,0.5) 0%, rgba(255,192,203,0) 70%);
-    filter: blur(40px);
-    opacity: 0;
-    transition: opacity 1s ease;
-    z-index: 0;
-  }
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: #ff4d6d;
+  border-radius: 50%;
+}
 
-  #envelope {
-    width: 250px;
-    height: 150px;
-    background: #ffccd5;
-    position: relative;
-    cursor: pointer;
-    perspective: 600px;
-    z-index: 1;
-  }
+.heart::before { top: -60px; }
+.heart::after { left: 60px; }
 
-  #envelope .flap {
-    width: 100%;
-    height: 50%;
-    background: #ff99aa;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform-origin: top center;
-    transition: transform 1s ease;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  }
+@keyframes heartbeat {
+  0% { transform: scale(1) rotate(-45deg); }
+  14% { transform: scale(1.15) rotate(-45deg); }
+  28% { transform: scale(1) rotate(-45deg); }
+  42% { transform: scale(1.15) rotate(-45deg); }
+  70% { transform: scale(1) rotate(-45deg); }
+}
 
-  #envelope.open .flap {
-    transform: rotateX(180deg);
-  }
+/* 🖼️ PHOTOS */
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 90%;
+  max-width: 420px;
+  align-items: center;
+}
 
-  /* Photos Layer */
-  #photos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 20px;
-    opacity: 0;
-    transition: opacity 1s ease;
-    position: relative;
-    z-index: 2;
-  }
+.photo-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+  text-align: center;
+}
 
-  .photo-container {
-    position: relative;
-    text-align: center;
-    transform: translateY(50px);
-    opacity: 0;
-    transition: transform 0.8s ease-out, opacity 0.8s ease-out;
-  }
+.photo-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  .photo-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,182,193,0.5) 0%, rgba(255,182,193,0) 70%);
-    filter: blur(30px);
-    opacity: 0;
-    transition: opacity 1s ease;
-    z-index: 0;
-  }
+.photo-card img {
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 0 20px rgba(255,77,109,.5);
+}
 
-  /* Swing effect */
-  .swing img {
-    transform-origin: top center;
-    animation: swing 2s ease-in-out infinite alternate;
-    position: relative;
-    z-index: 1;
-  }
+.photo-msg {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #5a0026;
+}
 
-  @keyframes swing {
-    0% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
-    100% { transform: rotate(-5deg); }
-  }
+/* 🔘 BUTTON */
+.scroll-btn {
+  padding: 14px 28px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg, #ff4d6d, #ff758f);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-  /* Floating effect */
-  .floating img {
-    animation: floatPhoto 6s ease-in-out infinite alternate;
-  }
+/* 🌙 NIGHT MODE */
+body.night {
+  background: radial-gradient(circle at top, #1b0f1a, #09040c);
+  color: #ffd6e0;
+}
 
-  @keyframes floatPhoto {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-15px); }
-  }
+body.night .photo-msg {
+  color: #ffd6e0;
+}
 
-  .photo-container img {
-    width: 150px;
-    height: 150px;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  }
+body.night .scroll-btn {
+  background: linear-gradient(135deg, #ff4d6d, #c9184a);
+}
 
-  .love-note {
-    margin-top: 5px;
-    background: #ffd6e0;
-    padding: 6px 10px;
-    border-radius: 8px;
-    color: #d6336c;
-    font-weight: bold;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    white-space: nowrap;
-    font-size: 14px;
-    display: inline-block;
-    position: relative;
-    z-index: 2;
-  }
+body.night .star {
+  opacity: 0.9;
+  box-shadow: 0 0 6px rgba(255,255,255,.8);
+}
 
-  /* Hearts */
-  .heart {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: pink;
-    clip-path: polygon(50% 0%, 61% 13%, 75% 13%, 88% 26%, 88% 41%, 75% 60%, 50% 80%, 25% 60%, 12% 41%, 12% 26%, 25% 13%, 39% 13%);
-    opacity: 0.8;
-    pointer-events: none;
-    animation: float 3s linear forwards;
-  }
-
-  @keyframes float {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-50px) rotate(360deg); opacity: 0; }
-  }
-
-  /* Confetti */
-  .confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    top: -10px;
-    pointer-events: none;
-    opacity: 0.9;
-    animation: fall 3s linear forwards;
-  }
-
-  @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
-    50% { opacity: 1; }
-    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-  }
-
-  button {
-    background: #d6336c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 20px auto;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 16px;
-    display: block;
-  }
+#nightToggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 999;
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: none;
+  background: #ff8fab;
+  font-weight: bold;
+  cursor: pointer;
+}
 </style>
 </head>
+
 <body>
 
-<!-- Layer 1 -->
+<div id="stars"></div>
+<button id="nightToggle">🌙 Night Mode</button>
+
+<!-- LAYER 1 -->
 <div class="layer" id="layer1">
-  <h1>Happy Anniversary, Babyyyy ❤️!</h1>
-  <h2>Anniversary Date: 10th January, 2026</h2>
-  <div id="special-message">
-    <p>Our journey began on <strong>19th March, 2025</strong> ❤️</p>
-    <p>At first, I had my doubts… I wasn’t sure what to feel 🤔</p>
-    <p>But <strong>you</strong> stayed by my side through every high and low 💪</p>
-    <p><strong>You</strong> worked hard and even became <strong>first runner-up</strong> in the college football tournament ⚽🏆</p>
-    <p>We shared our <strong>first Durga Puja together</strong> in 2025, making unforgettable memories 🙏🎉</p>
-    <p><strong>You’ve</strong> seen me cry, laugh, act silly, and even when I’m tired… <strong>you</strong> never gave up on me 💖</p>
-    <p>I am so proud of <strong>you</strong> and grateful for every moment we share 🌸✨</p>
-  </div>
-
-  <div id="envelope-container">
-    <div id="envelope-glow"></div>
-    <div id="envelope">
-      <div class="flap"></div>
-    </div>
-  </div>
+  <div class="heart"></div>
+  <h1>I just wanted to tell you…</h1>
+  <h2>You mean everything to me ❤️</h2>
+  <button class="scroll-btn" onclick="nextLayer(2)">Next ↓</button>
 </div>
 
-<!-- Layer 2 -->
+<!-- LAYER 2 -->
 <div class="layer hidden" id="layer2">
-  <div id="photos">
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic1.jpeg" alt="Photo 1">
-      <div class="love-note">You make my heart smile ❤️</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic2.jpg" alt="Photo 2">
-      <div class="love-note">Every moment with you is magical ✨</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic3.jpeg" alt="Photo 3">
-      <div class="love-note">Forever and always, my love 💕</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic4.jpg" alt="Photo 4">
-      <div class="love-note">You complete me 💖</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic5.jpeg" alt="Photo 5">
-      <div class="love-note">Life is beautiful with you 🌸</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic6.jpeg" alt="Photo 6">
-      <div class="love-note">You are my sunshine ☀️</div>
-    </div>
-    <div class="photo-container swing">
-      <div class="photo-glow"></div>
-      <img src="pic7.jpeg" alt="Photo 7">
-      <div class="love-note">Always yours, forever mine 💘</div>
-    </div>
-  </div>
-  <button onclick="stopSong()">Stop Song</button>
+  <h1>Every memory with you ✨</h1>
+
+  <div class="photo-container" id="photos"></div>
+
+  <button class="scroll-btn hidden" id="photoNext" onclick="nextLayer(3)">Next ↓</button>
 </div>
 
-<audio id="song" loop preload="auto">
-  <source src="song.mp3.mpeg" type="audio/mpeg">
-</audio>
+<!-- LAYER 3 -->
+<div class="layer hidden" id="layer3">
+  <h1>I LOVE YOU ❤️</h1>
+</div>
+
+<audio id="song" src="music.mp3.mpeg" loop></audio>
 
 <script>
-const envelope = document.getElementById('envelope');
-const envelopeGlow = document.getElementById('envelope-glow');
-const layer1 = document.getElementById('layer1');
-const layer2 = document.getElementById('layer2');
-const photoContainers = document.querySelectorAll('.photo-container');
-const photos = document.getElementById('photos');
-const song = document.getElementById('song');
+/* 🌌 STARS */
+const starBox = document.getElementById("stars");
+setInterval(() => {
+  if (starBox.children.length > 120) return;
+  const s = document.createElement("div");
+  s.className = "star";
+  s.style.left = Math.random() * innerWidth + "px";
+  s.style.animationDuration = 8 + Math.random() * 12 + "s";
+  starBox.appendChild(s);
+  s.addEventListener("animationend", () => s.remove());
+}, 300);
 
-// Animate special message lines
-document.querySelectorAll('#special-message p').forEach((line, index) => {
-  setTimeout(() => line.classList.add('visible'), index * 1200);
-});
+/* 📸 PHOTO DATA */
+const photos = [
+  { src: "pic1.jpeg", msg: "This moment still makes me smile 💖" },
+  { src: "pic2.jpg", msg: "Every second with you feels special ✨" },
+  { src: "pic3.jpeg", msg: "You make my world brighter 🌸" },
+  { src: "pic4.jpg", msg: "Memories I’ll cherish forever 💕" },
+  { src: "pic5.jpeg", msg: "You are my favorite person 🫶" },
+  { src: "pic6.jpeg", msg: "Every laugh with you is precious 💫" },
+  { src: "pic7.jpeg", msg: "I’d choose you again and again ❤️" }
+];
 
-// Confetti
-function createConfetti() {
-  const confettiCount = 50;
-  for (let i = 0; i < confettiCount; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = `${Math.random() * window.innerWidth}px`;
-    confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
-    const size = 5 + Math.random()*7;
-    confetti.style.width = confetti.style.height = `${size}px`;
-    confetti.style.animationDuration = `${2 + Math.random()*2}s`;
-    document.body.appendChild(confetti);
-    confetti.addEventListener('animationend', () => confetti.remove());
-  }
+function showPhotos() {
+  const container = document.getElementById("photos");
+  photos.forEach((p, i) => {
+    setTimeout(() => {
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.innerHTML = `
+        <img src="${p.src}">
+        <div class="photo-msg">${p.msg}</div>
+      `;
+      container.appendChild(card);
+      requestAnimationFrame(() => card.classList.add("show"));
+
+      if (i === photos.length - 1) {
+        document.getElementById("photoNext").classList.remove("hidden");
+      }
+    }, i * 2500); // ⏳ delay between photos
+  });
 }
 
-// Hearts
-function createHearts(container, count=5, sizeRange=[6,12], durationRange=[2,3]) {
-  for (let i=0; i<count; i++) {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    const size = sizeRange[0] + Math.random()*(sizeRange[1]-sizeRange[0]);
-    heart.style.width = heart.style.height = `${size}px`;
-    heart.style.left = `${Math.random() * (container.offsetWidth - size)}px`;
-    heart.style.top = `${Math.random() * (container.offsetHeight - size)}px`;
-    heart.style.animationDuration = `${durationRange[0] + Math.random()*(durationRange[1]-durationRange[0])}s`;
-    container.appendChild(heart);
-    heart.addEventListener('animationend', () => heart.remove());
-  }
+/* 🔀 LAYERS */
+function nextLayer(n) {
+  document.querySelectorAll(".layer").forEach(l => l.classList.add("hidden"));
+  document.getElementById("layer" + n).classList.remove("hidden");
+  document.getElementById("song").play().catch(()=>{});
+  if (n === 2) showPhotos();
 }
 
-function stopSong() {
-  song.pause();
-  song.currentTime = 0;
-}
-
-// Envelope click
-envelope.addEventListener('click', () => {
-  envelope.classList.add('open');
-  envelopeGlow.style.opacity = '1';
-  song.play().catch(e => console.log("Audio play blocked:", e));
-  createConfetti();
-  createHearts(document.getElementById('envelope-container'), 20, [6,12], [1.5,2.5]);
-
-  setTimeout(() => {
-    layer1.classList.add('hidden');
-    layer2.classList.remove('hidden');
-
-    // Make photos container visible
-    photos.style.opacity = '1';
-
-    photoContainers.forEach((container, index) => {
-      setTimeout(() => {
-        container.style.transform = 'translateY(0)';
-        container.style.opacity = '1';
-        container.querySelector('.photo-glow').style.opacity = '1';
-        container.querySelector('.love-note').style.opacity = '1';
-        container.classList.add('floating');
-        createHearts(container, 10, [6,12], [2,3]);
-      }, index * 700);
-    });
-
-  }, 1000);
-});
+/* 🌙 NIGHT MODE */
+const btn = document.getElementById("nightToggle");
+btn.onclick = () => {
+  document.body.classList.toggle("night");
+  btn.textContent = document.body.classList.contains("night")
+    ? "☀️ Day Mode"
+    : "🌙 Night Mode";
+};
 </script>
+
 </body>
 </html>
